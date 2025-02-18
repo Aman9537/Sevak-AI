@@ -1,0 +1,9 @@
+python-dotenv
+langchain
+langchain_groq
+langchain_community
+langchain_chroma
+langchain_core
+langchain_huggingface
+flask
+pyPDF
