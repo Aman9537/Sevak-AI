@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sevak AI - Constitution Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('{{ url_for("static", filename="image_04.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            color: #333;
+        }
+        .logo {
+            width: 100px; 
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #dcc705;
+        }
+        .description {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .chat-container {
+            width: 90%;
+            max-width: 900px;
+            height: 500px;
+            background: url('{{ url_for("static", filename="chat.jpg") }}') no-repeat center center fixed;
+            background-size:cover ;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+        .messages {
+            max-height: 450px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            display: inline-block;
+        }
+        .user-message {
+            background-color: #1a73e8;
+            color: white;
+            text-align: right;
+            align-self: self-end;
+            border-radius: 10px 10px 0 10px;
+        }
+        .ai-message {
+            background-color: #e8f0fe;
+            color: #333;
+            text-align: left;
+            border-radius: 10px 10px 10px 0;
+            white-space: pre-line;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+    
+            background-color: #1662c4;
+            transform: translateY(-2px);
+        }
+        button:active {
+            background-color: #0f4ba8;
+            transform: translateY(1px);
+        }
+
+    </style>
+</head>
+<body>
+    
+<img src="{{ url_for('static', filename='logo.png') }}" alt="Chatbot Logo" class="logo">
+
+
+<div class="title">SEVAK AI </div>
+<div class="description">Ask questions about the Indian Constitution</div>
+
+<div class="chat-container">
+    <div class="messages" id="messages"></div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button onclick="sendMessage()">Ask</button>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        if (userInput.trim() === "") return;
+
+        const messageContainer = document.getElementById("messages");
+        messageContainer.innerHTML += `<div class="message user-message">${userInput}</div>`;
+        document.getElementById("user-input").value = '';
+
+        fetch("/ask", {
+            method: "POST",
+            body: new URLSearchParams({ user_input: userInput }),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let aiMessage = data.answer || data.error;
+            
+            // Convert response into bullet points
+            aiMessage = formatToBulletPoints(aiMessage);
+
+            messageContainer.innerHTML += `<div class="message ai-message">${aiMessage}</div>`;
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        })
+        .catch(err => {
+            console.error(err);
+            alert("An error occurred. Please try again.");
+        });
+    }
+
+    function formatToBulletPoints(text) {
+        // Ensure bold formatting works
+        text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+        // Split text by newlines or sentence-ending periods
+        let lines = text.split(/[\n.]+/).map(line => line.trim()).filter(line => line.length > 0);
+
+        // Wrap each sentence in a bullet point
+        let formattedText = "<ul>";
+        lines.forEach(line => {
+            formattedText += `<li>${line}</li>`;
+        });
+        formattedText += "</ul>";
+
+        return formattedText;
+    }
+</script>
+
+</body>
+</html>
