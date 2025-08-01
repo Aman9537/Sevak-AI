@@ -42,8 +42,7 @@ The project is deployed on **GitHub**. You can fork and modify it as per your re
 ## **Contributing**
 Contributions are welcome! If you find any issues or improvements, feel free to open a pull request.
 
-## **License**
-This project is licensed under the **MIT License**.
+
 
 ---
 🚀 **Developed with passion for legal AI solutions!**
