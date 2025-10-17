@@ -8,3 +8,4 @@ langchain_huggingface
 flask
 pyPDF
 gunicorn
+sentence-transformers
