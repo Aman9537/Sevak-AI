@@ -4,10 +4,10 @@ import requests
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
 from langchain_groq import ChatGroq
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import create_retrieval_chain, create_history_aware_retriever
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -85,7 +85,7 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=80)
 if not os.path.exists(vectorstore_path): 
     splits = text_splitter.split_documents(data)
     vectorstore = Chroma.from_documents(splits, embedding_model, persist_directory=vectorstore_path)
-    vectorstore.persist()
+    
 else:
     vectorstore = Chroma(persist_directory=vectorstore_path, embedding_function=embedding_model)
 
@@ -173,4 +173,4 @@ def ask():
         return jsonify({"error": "No input provided."})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=7860)
